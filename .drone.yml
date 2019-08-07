@@ -1,33 +1,17 @@
-kind: pipeline
-name: default
-
 workspace:
-  base: /go
+  base: /srv/drone-demo
   path: .
 
-steps:
-#   - name: report
-#     image: golang
-#     volumes:
-#       - name: reports
-#         path: /var/reports
-#     commands:
-#       - mkdir -p /var/reports
-#       - go get
-#       - go get github.com/360EntSecGroup-Skylar/goreporter
-#       - goreporter -p ./ -f html -r /var/reports/
-
-   - name: build
-     image: golang
+pipeline:
+  build:
+     image: golang:alpine
+     # pull: true
+     environment:
+       - KEY=VALUE
+     secrets: [key1, key2]
      commands:
-       - go get
-       - go build -o output
-       - chmod +x output
-#
-#  - name: run
-#    image: golang
-#    commands:
-#      - go get
-#      - go build -o output
-#      - chmod +x output
-#      - ./output
+       - echo $$KEY
+       - pwd
+       - ls
+       - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+       - ./app
